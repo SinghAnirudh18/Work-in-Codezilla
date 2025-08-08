@@ -7,7 +7,9 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const doctorSignup = require('./routes/doctorsignup');
 const appointment = require('./routes/appointment');
+const ChatMessage = require('./models/ChatMessage');
 
+const {GoogleGenerativeAI} = require('@google/generative-ai')
 // Google Translate API
 const { translate } = require('@vitalets/google-translate-api');
 
@@ -15,7 +17,7 @@ require('dotenv').config();
 
 const app = express();
 app.use(cookieParser());
-
+const genAI = new GoogleGenerativeAI("AIzaSyBcqJQl9hXGYo1Gf8Od3iaparO2kXj-zNg");
 const server = http.createServer(app);
 const io = new Server(server);
 
@@ -62,6 +64,7 @@ async function translateText(text, targetLang, sourceLang = 'auto') {
         if (!result || !result.text) throw new Error('Invalid translation result');
         const detectedLang = result.from?.language?.iso || result.from?.language || result.from || sourceLang;
         console.log(`Translation successful: "${result.text}" (${detectedLang} → ${targetLang})`);
+
         return { text: result.text, translated: true, originalText: text, sourceLang: detectedLang, targetLang };
     } catch (error) {
         console.error('Translation error:', error.message);
@@ -90,7 +93,17 @@ async function processMessage(socket, { roomId, text, senderRole }) {
 
     // Save to history
     roomMessages[roomId].push(baseMessage);
-
+    await ChatMessage.create({
+    sessionId: roomId,
+    sender: senderRole,
+    senderRole,
+    originalText: text,
+    translatedText: null, // or translation.text if you want
+    translated: false,    // will be true if you store translated version
+    sourceLang: senderLang,
+    targetLang: null,     // fill if known
+    timestamp
+});
     // Send to everyone in room
     const roomSockets = io.sockets.adapter.rooms.get(roomId);
     if (!roomSockets) return;
@@ -126,6 +139,52 @@ async function processMessage(socket, { roomId, text, senderRole }) {
 }
 
 // Routes
+app.get("/summarise/:meetingid", async (req, res) => {
+  try {
+    const meetingId = req.params.meetingid;
+
+    // 1️⃣ Get all messages for that meeting in time order
+    const messages = await ChatMessage.find({ sessionId: meetingId })
+      .sort({ timestamp: 1 })
+      .lean();
+
+    if (!messages.length) {
+      return res.status(404).json({ error: "No messages found for this meeting" });
+    }
+
+    // 2️⃣ Prepare conversation text
+    const conversationText = messages
+      .map(
+        (msg) =>
+          `[${msg.timestamp.toISOString()}] ${msg.senderRole || msg.sender}: ${msg.originalText}`
+      )
+      .join("\n");
+
+    // 3️⃣ Build prompt for Gemini
+    const prompt = `
+You are an AI meeting assistant.
+Summarise the following meeting in bullet points, highlighting:
+- Key discussion topics
+- Decisions made
+- Action items with responsible persons
+
+Conversation:
+${conversationText}
+    `;
+
+    // 4️⃣ Call Gemini API
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const result = await model.generateContent(prompt);
+    const summary = result.response.text();
+
+    // 5️⃣ Return summary
+    
+    res.render("summary", { meetingId, summary });
+  } catch (error) {
+    console.error("Error generating summary:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 app.get('/home', (req, res) => {
     if (req.cookies.token2) return res.render('home2');
     res.render('home');
