@@ -12,14 +12,22 @@
 The **Multilingual Meeting Assistant** is a comprehensive real-time communication platform that enables seamless multilingual meetings through advanced speech-to-text transcription, automatic language translation, and AI-powered meeting summarization.
 
 ### ✨ Key Features
+   
+- 🌍 Instant Medical Translation: Translate spoken or written medical terms, symptoms, and diagnoses between languages in real time.
+   
+- 🤖 Clinical Summaries: AI-powered consultation briefs highlighting key medical topics and next steps.
+   
+- 💬 Live Multilingual Messaging: Secure, real-time chat with automatic medical translation for patient-provider dialogue.
+   
+- 📊 Consultation Analytics: Historical insights and summaries of medical interactions and participant engagement.
+   
+- 🔒 Healthcare-Grade Security: Scalable, privacy-compliant protection for sensitive patient data.
 
-- 🎤 **Real-time Speech-to-Text**: Multi-speaker transcription with high accuracy
-- 🌍 **Automatic Translation**: Support for 50+ languages with context-aware translation
-- 🤖 **AI-Powered Summaries**: Intelligent meeting summaries with key topics and action items
-- 💬 **Real-time Chat**: Live messaging with instant translation
-- 📊 **Meeting Analytics**: Historical meeting data and participant insights
-- 🔒 **Secure & Scalable**: Enterprise-ready with robust security measures
-
+- 🧏 Sign Language Support: Text/voice-to-sign language animation for accessible healthcare communication.
+   
+- 🔊 Text-to-Speech Output: Converts written translations to audible voice, supporting providers and patients with different needs.
+   
+   
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -560,5 +568,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 Made with ❤️ by the Multilingual Meeting Assistant Team
 
 </div>
+
 
 
