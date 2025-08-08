@@ -1,0 +1,436 @@
+<!--!DOCTYPE html>
+<html>
+<head>
+    <title>Disease Prediction</title>
+</head>
+<body>
+    <h2>Disease Prediction from Symptom Text</h2>
+    <textarea id="symptomInput" rows="4" cols="50" placeholder="Enter your symptoms here..."></textarea><br><br>
+    <button onclick="submitSymptoms()">Predict Disease</button>
+
+    <h3>Prediction Result:</h3>
+    <div id="result"></div>
+
+    <script>
+        async function submitSymptoms() {
+            const symptoms = document.getElementById('symptomInput').value;
+
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ symptoms: symptoms })
+            });
+
+            const data = await response.json();
+            const resultDiv = document.getElementById('result');
+
+            if (data.prediction) {
+                resultDiv.textContent = 'Predicted Disease: ' + data.prediction;
+            } else {
+                resultDiv.textContent = 'Error: ' + (data.error || 'Unknown error');
+            }
+        }
+    </script>
+</body>
+</html-->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Assessment Form</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS.css') }}">
+</head>
+<body>
+    <div class="form-container">
+        <div class="form-header">
+            <h1>Health Assessment Form</h1>
+            <p>Please provide accurate information for a comprehensive health analysis</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+        <div class="validation-message" id="validationMessage"></div>
+
+        <form id="healthForm">
+            <!-- Personal Information -->
+            <div class="section">
+                <h3 class="section-title">Personal Information</h3>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label for="age">Age *</label>
+                        <input type="number" id="age" name="age" required>
+                        <div class="error-message" id="ageError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Gender *</label>
+                        <select id="gender" name="gender" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <div class="error-message" id="genderError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="education_level">Education Level *</label>
+                        <select id="education_level" name="education_level" required>
+                            <option value="">Select Education</option>
+                            <option value="High School">High School</option>
+                            <option value="Bachelor">Bachelor's Degree</option>
+                            <option value="Master">Master's Degree</option>
+                            <option value="PhD">PhD</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Physical Measurements -->
+            <div class="section">
+                <h3 class="section-title">Physical Measurements</h3>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label for="height">Height (cm) *</label>
+                        <input type="number" id="height" name="height" step="0.1" required>
+                        <div class="error-message" id="heightError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="weight">Weight (kg) *</label>
+                        <input type="number" id="weight" name="weight" step="0.1" required>
+                        <div class="error-message" id="weightError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="waist_size">Waist Size (cm)</label>
+                        <input type="number" id="waist_size" name="waist_size" step="0.1">
+                    </div>
+                </div>
+                <div id="bmiDisplay" class="bmi-display" style="display: none;"></div>
+            </div>
+
+            <!-- Health Metrics -->
+            <div class="section">
+                <h3 class="section-title">Health Metrics</h3>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label for="blood_pressure">Blood Pressure (systolic)</label>
+                        <input type="number" id="blood_pressure" name="blood_pressure">
+                    </div>
+                    <div class="form-group">
+                        <label for="heart_rate">Heart Rate (bpm)</label>
+                        <input type="number" id="heart_rate" name="heart_rate">
+                    </div>
+                    <div class="form-group">
+                        <label for="cholesterol">Cholesterol Level</label>
+                        <input type="number" id="cholesterol" name="cholesterol">
+                    </div>
+                </div>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label for="glucose">Glucose Level</label>
+                        <input type="number" id="glucose" name="glucose" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="insulin">Insulin Level</label>
+                        <input type="number" id="insulin" name="insulin" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="electrolyte_level">Electrolyte Level</label>
+                        <input type="number" id="electrolyte_level" name="electrolyte_level" step="0.1">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lifestyle -->
+            <div class="section">
+                <h3 class="section-title">Lifestyle & Daily Habits</h3>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label for="sleep_hours">Sleep Hours per Night</label>
+                        <input type="number" id="sleep_hours" name="sleep_hours" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="sleep_quality">Sleep Quality</label>
+                        <select id="sleep_quality" name="sleep_quality">
+                            <option value="">Select Quality</option>
+                            <option value="Excellent">Excellent</option>
+                            <option value="Good">Good</option>
+                            <option value="Fair">Fair</option>
+                            <option value="Poor">Poor</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="work_hours">Work Hours per Day</label>
+                        <input type="number" id="work_hours" name="work_hours" step="0.1">
+                    </div>
+                </div>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label for="physical_activity">Physical Activity (hours/day)</label>
+                        <input type="number" id="physical_activity" name="physical_activity" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="daily_steps">Daily Steps</label>
+                        <input type="number" id="daily_steps" name="daily_steps">
+                    </div>
+                    <div class="form-group">
+                        <label for="screen_time">Screen Time (hours/day)</label>
+                        <input type="number" id="screen_time" name="screen_time" step="0.1">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nutrition -->
+            <div class="section">
+                <h3 class="section-title">Nutrition & Diet</h3>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label for="calorie_intake">Daily Calorie Intake</label>
+                        <input type="number" id="calorie_intake" name="calorie_intake">
+                    </div>
+                    <div class="form-group">
+                        <label for="sugar_intake">Sugar Intake (g/day)</label>
+                        <input type="number" id="sugar_intake" name="sugar_intake" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="water_intake">Water Intake (liters/day)</label>
+                        <input type="number" id="water_intake" name="water_intake" step="0.1">
+                    </div>
+                </div>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label for="meals_per_day">Meals per Day</label>
+                        <input type="number" id="meals_per_day" name="meals_per_day">
+                    </div>
+                    <div class="form-group">
+                        <label for="diet_type">Diet Type</label>
+                        <select id="diet_type" name="diet_type">
+                            <option value="">Select Diet</option>
+                            <option value="Omnivore">Omnivore</option>
+                            <option value="Vegetarian">Vegetarian</option>
+                            <option value="Vegan">Vegan</option>
+                            <option value="Keto">Keto</option>
+                            <option value="Paleo">Paleo</option>
+                            <option value="Mediterranean">Mediterranean</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="caffeine_intake">Caffeine Intake</label>
+                        <select id="caffeine_intake" name="caffeine_intake">
+                            <option value="">Select Level</option>
+                            <option value="None">None</option>
+                            <option value="Low">Low</option>
+                            <option value="Moderate">Moderate</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mental Health & Stress -->
+            <div class="section">
+                <h3 class="section-title">Mental Health & Stress</h3>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label for="stress_level">Stress Level (1-10)</label>
+                        <input type="range" id="stress_level" name="stress_level" value="5" step="0.1" oninput="updateRangeDisplay('stress_level', this.value)">
+                        <span class="range-display" id="stress_level_display">5</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="mental_health_score">Mental Health Score (1-10)</label>
+                        <input type="range" id="mental_health_score" name="mental_health_score" value="5" step="0.1" oninput="updateRangeDisplay('mental_health_score', this.value)">
+                        <span class="range-display" id="mental_health_score_display">5</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="mental_health_support">Mental Health Support</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="support_yes" name="mental_health_support" value="Yes">
+                                <label for="support_yes">Yes</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="support_no" name="mental_health_support" value="No">
+                                <label for="support_no">No</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Work & Income -->
+            <div class="section">
+                <h3 class="section-title">Work & Income</h3>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label for="job_type">Job Type</label>
+                        <select id="job_type" name="job_type">
+                            <option value="">Select Job Type</option>
+                            <option value="Desk">Desk Job</option>
+                            <option value="Labor">Physical Labor</option>
+                            <option value="Mixed">Mixed</option>
+                            <option value="Unemployed">Unemployed</option>
+                            <option value="Retired">Retired</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="occupation">Occupation</label>
+                        <input type="text" id="occupation" name="occupation" placeholder="e.g., Engineer, Teacher, etc.">
+                    </div>
+                    <div class="form-group">
+                        <label for="income">Monthly Income</label>
+                        <input type="number" id="income" name="income" step="100">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Health Habits -->
+            <div class="section">
+                <h3 class="section-title">Health Habits</h3>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label for="smoking_level">Smoking Level</label>
+                        <select id="smoking_level" name="smoking_level">
+                            <option value="">Select Level</option>
+                            <option value="None">Non-smoker</option>
+                            <option value="Light">Light (1-5 per day)</option>
+                            <option value="Moderate">Moderate (6-15 per day)</option>
+                            <option value="Heavy">Heavy (16+ per day)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="alcohol_consumption">Alcohol Consumption</label>
+                        <select id="alcohol_consumption" name="alcohol_consumption">
+                            <option value="">Select Level</option>
+                            <option value="None">None</option>
+                            <option value="Light">Light (1-2 drinks/week)</option>
+                            <option value="Moderate">Moderate (3-7 drinks/week)</option>
+                            <option value="Heavy">Heavy (8+ drinks/week)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exercise_type">Primary Exercise Type</label>
+                        <select id="exercise_type" name="exercise_type">
+                            <option value="">Select Exercise</option>
+                            <option value="None">None</option>
+                            <option value="Cardio">Cardio</option>
+                            <option value="Strength">Strength Training</option>
+                            <option value="Yoga">Yoga/Flexibility</option>
+                            <option value="Mixed">Mixed</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Healthcare & Environment -->
+            <div class="section">
+                <h3 class="section-title">Healthcare & Environment</h3>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label for="healthcare_access">Healthcare Access</label>
+                        <select id="healthcare_access" name="healthcare_access">
+                            <option value="">Select Access</option>
+                            <option value="Excellent">Excellent</option>
+                            <option value="Good">Good</option>
+                            <option value="Moderate">Moderate</option>
+                            <option value="Poor">Poor</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="sunlight_exposure">Sunlight Exposure</label>
+                        <select id="sunlight_exposure" name="sunlight_exposure">
+                            <option value="">Select Exposure</option>
+                            <option value="Low">Low (&lt; 30 min/day)</option>
+                            <option value="Moderate">Moderate (30-60 min/day)</option>
+                            <option value="High">High (&gt; 60 min/day)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="device_usage">Device Usage</label>
+                        <select id="device_usage" name="device_usage">
+                            <option value="">Select Usage</option>
+                            <option value="Low">Low</option>
+                            <option value="Moderate">Moderate</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label for="environmental_risk_score">Environmental Risk Score (0-10)</label>
+                        <input type="range" id="environmental_risk_score" name="environmental_risk_score" value="5" step="0.1" oninput="updateRangeDisplay('environmental_risk_score', this.value)">
+                        <span class="range-display" id="environmental_risk_score_display">5</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="daily_supplement_dosage">Daily Supplement Dosage</label>
+                        <input type="number" id="daily_supplement_dosage" name="daily_supplement_dosage" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="gene_marker_flag">Genetic Risk Marker</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="gene_yes" name="gene_marker_flag" value="1">
+                                <label for="gene_yes">Yes</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="gene_no" name="gene_marker_flag" value="0">
+                                <label for="gene_no">No</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Information -->
+            <div class="section">
+                <h3 class="section-title">Additional Information</h3>
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="family_history">Family History of Health Issues</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="family_yes" name="family_history" value="Yes">
+                                <label for="family_yes">Yes</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="family_no" name="family_history" value="No">
+                                <label for="family_no">No</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="pet_owner">Pet Owner</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="pet_yes" name="pet_owner" value="Yes">
+                                <label for="pet_yes">Yes</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="pet_no" name="pet_owner" value="No">
+                                <label for="pet_no">No</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="insurance" name="insurance" value="Yes">
+                    <label for="insurance">I have health insurance</label>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email (for results)</label>
+                    <input type="email" id="email" name="email" placeholder="your@email.com">
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                Submit Health Assessment
+            </button>
+        </form>
+    </div>
+    <script src="{{ url_for('static', filename='JS.js') }}"></script>
+</body>
+</html>
