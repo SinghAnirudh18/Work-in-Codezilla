@@ -39,17 +39,12 @@ cd multilingual-meeting-assistant
 # Install dependencies
 npm install
 
-# Copy environment configuration
-cp .env.example .env
-
-# Configure your API keys in .env file
-nano .env
 
 # Start MongoDB (if running locally)
 mongod
 
 # Run the application
-npm run dev
+node server.js
 ```
 
 The application will be available at `http://localhost:3000`
@@ -565,4 +560,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 Made with ❤️ by the Multilingual Meeting Assistant Team
 
 </div>
+
 
