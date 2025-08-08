@@ -98,6 +98,39 @@ The application will be available at `http://localhost:3000`
 - **Real-time Notifications**: Live updates for new messages and meeting events
 - **Mobile Responsive**: Works seamlessly on desktop, tablet, and mobile devices
 
+## 📚 Model Training and Notebooks
+
+We provide Jupyter notebooks for model training and experimentation to complement the multilingual meeting assistant:
+
+- **form_codezilla.ipynb**: Notebook detailing data preprocessing, feature engineering, and traditional machine learning model training using tabular health data (e.g., imputation, scaling, encoding, train-test split).
+- **NNcodeZilla.ipynb**: Notebook focused on building, training, and evaluating neural network models for disease prediction, including model architecture, training loops, and performance visualization.
+
+### Pre-trained Models
+
+- `health_prediction_model.pkl`: Serialized machine learning model (e.g., scikit-learn) trained on preprocessed health assessment data, ready for quick loading and inference.
+- `disease_prediction_model.h5`: Keras/TensorFlow neural network model file saved after training for disease prediction tasks.
+
+---
+
+### Usage
+
+- You can find and run the notebooks in the `Notebooks/` folder.
+- The pre-trained models are located in the `ML/Notebooks/` directory and can be loaded directly by the application or for inference using appropriate libraries (e.g., `joblib` or `pickle` for `.pkl`, TensorFlow/Keras for `.h5`).
+- To retrain or fine-tune the models:
+  - Open the relevant notebook (`form_codezilla.ipynb` or `NNcodeZilla.ipynb`) in Jupyter or Google Colab.
+  - Follow the step-by-step instructions for data preprocessing, model training, and evaluation.
+  - Update hyperparameters or training data as needed.
+  
+Refer to the notebooks for detailed explanations, code, and comments to help you understand and customize the training process.
+
+---
+
+### Note
+
+- Ensure required dependencies (such as scikit-learn, pandas, tensorflow, numpy) are installed before running the notebooks.
+- Keep model files and notebooks synchronized when updating or retraining models to maintain consistency with the application.
+
+
 ## ⚙️ Configuration
 
 ### Environment Variables
@@ -568,6 +601,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 Made with ❤️ by the Multilingual Meeting Assistant Team
 
 </div>
+
 
 
 
