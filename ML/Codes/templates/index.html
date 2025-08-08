@@ -1,43 +1,3 @@
-<!--!DOCTYPE html>
-<html>
-<head>
-    <title>Disease Prediction</title>
-</head>
-<body>
-    <h2>Disease Prediction from Symptom Text</h2>
-    <textarea id="symptomInput" rows="4" cols="50" placeholder="Enter your symptoms here..."></textarea><br><br>
-    <button onclick="submitSymptoms()">Predict Disease</button>
-
-    <h3>Prediction Result:</h3>
-    <div id="result"></div>
-
-    <script>
-        async function submitSymptoms() {
-            const symptoms = document.getElementById('symptomInput').value;
-
-            const response = await fetch('/predict', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ symptoms: symptoms })
-            });
-
-            const data = await response.json();
-            const resultDiv = document.getElementById('result');
-
-            if (data.prediction) {
-                resultDiv.textContent = 'Predicted Disease: ' + data.prediction;
-            } else {
-                resultDiv.textContent = 'Error: ' + (data.error || 'Unknown error');
-            }
-        }
-    </script>
-</body>
-</html-->
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -434,3 +394,4 @@
     <script src="{{ url_for('static', filename='JS.js') }}"></script>
 </body>
 </html>
+
