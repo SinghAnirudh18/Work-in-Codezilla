@@ -28,8 +28,8 @@ except Exception as e:
     lifestyle_model = None
 
 # Ensure static files are served if needed
-app.static_folder = 'public'
-app.static_url_path = '/public'
+app.static_folder = 'static'
+app.static_url_path = '/static'
 
 def validate_health_assessment(data):
     errors = []
